@@ -4,20 +4,15 @@ import numpy as np
 import ast
 import pandas as pd
 from torchvision import transforms
+from torch.utils.data import DataLoader
+
 import os
 
 
 class ClientDataset(Dataset):
-    """Face Landmarks dataset."""
 
     def __init__(self, path, transform=None):
-        """
-        Args:
-            csv_file (string): Path to the csv file with annotations.
-            root_dir (string): Directory with all the images.
-            transform (callable, optional): Optional transform to be applied
-                on a sample.
-        """
+
         self.path = path
         self.transform = transform
         self.df = pd.read_csv(path)
@@ -41,16 +36,9 @@ class ClientDataset(Dataset):
 
 
 class ValidationDataset(Dataset):
-    """Face Landmarks dataset."""
 
     def __init__(self, path, transform=None):
-        """
-        Args:
-            csv_file (string): Path to the csv file with annotations.
-            root_dir (string): Directory with all the images.
-            transform (callable, optional): Optional transform to be applied
-                on a sample.
-        """
+
         self.path = path
         self.transform = transform
         df_list = []
@@ -80,3 +68,14 @@ class ValidationDataset(Dataset):
         sample = {'input': input, 'label': label}
 
         return sample
+
+
+def getValidationDataloader(path, transform, batch_size, shuffle):
+    list_users = os.listdir(path)
+    total_num_users = len(list_users)
+    dl_list = []
+    for idx in range(total_num_users):
+        dataset = ClientDataset(path+str(idx), transform)
+        dl_list.append(DataLoader(dataset, batch_size=batch_size, shuffle=shuffle))
+
+    return dl_list

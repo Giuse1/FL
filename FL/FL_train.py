@@ -4,7 +4,7 @@ import copy
 import torch
 from FL.FL_getDataset import *
 from FL.torch_dataset import ValidationDataset
-
+from torch.utils.data import DataLoader
 import os
 
 def train_model(global_model, criterion, num_rounds=50, local_epochs=1):

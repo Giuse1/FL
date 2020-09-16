@@ -62,6 +62,7 @@ class LocalUpdate(object):
 
         for iter in range(self.local_epochs):
             batch_loss = []
+            correct = 0
             for (i, data) in enumerate(dataloader):
                 images, labels = data['input'].to(self.device), data['label'].to(self.device)
 
@@ -69,13 +70,13 @@ class LocalUpdate(object):
                 log_probs = model(images.double())
                 loss = self.criterion(log_probs, labels)
                 _, preds = torch.max(log_probs, 1)
+                correct += torch.sum(preds == labels).cpu().numpy()
 
                 loss.backward()
                 optimizer.step()
 
 
-                batch_loss.append(loss.item())
-            epoch_loss.append(sum(batch_loss)/len(batch_loss))
+                #batch_loss.append(loss.item())
+            #epoch_loss.append(sum(batch_loss)/len(batch_loss))
 
-        return model.state_dict(), sum(epoch_loss) / len(epoch_loss)
-
+        return model.state_dict(), correct, len(dataset)

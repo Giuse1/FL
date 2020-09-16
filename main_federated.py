@@ -46,7 +46,7 @@ model_ft = model_ft.to(device)
 #valloader = torch.utils.data.DataLoader(valset, batch_size=64, shuffle=True)
 #dataloaders_dict = {'train': trainloader, 'val': valloader }
 
-optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
+optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.1, momentum=0.9)
 criterion = nn.CrossEntropyLoss()
 
 hist = train_model(model_ft, criterion, num_rounds=num_rounds, local_epochs=local_epochs)

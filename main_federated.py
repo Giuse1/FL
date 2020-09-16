@@ -34,6 +34,8 @@ def initialize_model(num_classes=10, num_channels=1):
     return model_ft
 
 model_ft = initialize_model(num_classes, num_channels=1)
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model_ft = model_ft.to(device)
 
 #transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)),])
 #trainset = datasets.MNIST('', download=True, train=True, transform=transform)

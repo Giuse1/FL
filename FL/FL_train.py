@@ -58,7 +58,6 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
             else:
                 val_loss_r, val_accuracy_r = model_evaluation(model=global_model,dataloader=valloader, criterion=criterion)
-                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, mean(val_loss_r), mean(val_accuracy_r)))
 
                 val_loss.append(val_loss_r)
                 val_acc.append(val_accuracy_r)

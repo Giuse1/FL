@@ -9,6 +9,7 @@ from model import CNNMnist
 from FL.FL_train import train_model
 print("PyTorch Version: ",torch.__version__)
 print("Torchvision Version: ",torchvision.__version__)
+torch.manual_seed(0)
 
 
 batch_size = 8

@@ -18,8 +18,10 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
     num_users = 10
 
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
-    valset = datasets.MNIST('', download=True, train=False, transform=transform)
-    valloader = torch.utils.data.DataLoader(valset, batch_size=64, shuffle=True)
+
+    valset = ValidationDataset(path='data_test/', transform=self.transform)
+    valloader = DataLoader(valset, batch_size=8, shuffle=True)
+
     #mnist_noniid_dataset = get_train_dataset(trainset, num_users)
 
     for round in range(num_rounds):

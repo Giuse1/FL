@@ -26,7 +26,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
         print('Epoch {}/{}'.format(round, num_rounds - 1))
         print('-' * 10)
 
-        for phase in ['train']:
+        for phase in ['train', 'val']:
             if phase == 'train':
                 local_weights = []
                 local_correct = []

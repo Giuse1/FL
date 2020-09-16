@@ -21,7 +21,6 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
     valset = datasets.MNIST('', download=True, train=False, transform=transform)
     valloader = torch.utils.data.DataLoader(valset, batch_size=64, shuffle=True)
     #mnist_noniid_dataset = get_train_dataset(trainset, num_users)
-    val_loss_r, val_accuracy_r = model_evaluation(model=global_model, dataloader=valloader, criterion=criterion)
 
     for round in range(num_rounds):
         print('Epoch {}/{}'.format(round, num_rounds - 1))
@@ -29,16 +28,24 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
         for phase in ['train']:
             if phase == 'train':
-                local_weights, local_avg_acc, local_avg_losses = [], [], []
+                local_weights = []
+                local_correct = []
+                local_total = []
 
                 for idx in range(total_num_users):
 
                     local_model = LocalUpdate(transform=transform, id=idx, criterion=criterion, local_epochs=local_epochs)
-                    w, loss = local_model.update_weights(
+                    w, correct, total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
                     local_weights.append(copy.deepcopy(w))
-                    local_avg_losses.append(copy.deepcopy(loss))
-                    #local_avg_acc.append(copy.deepcopy(acc))
+                    #local_avg_losses.append(copy.deepcopy(loss))
+                    local_correct.append(copy.deepcopy(correct))
+                    local_total.append(copy.deepcopy(total))
+                    #print(correct)
+                    #print(total)
+                    #print('{} Acc: {:.4f}'.format(phase, sum(local_correct)/sum(local_total)))
+
+
 
 
                 global_weights = average_weights(local_weights)
@@ -46,7 +53,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
                 #train_loss.append(mean(local_avg_losses))
                 #train_acc.append(mean(local_avg_acc))
-                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, mean(local_avg_losses), mean(local_avg_acc)))
+                print('{} Acc: {:.4f}'.format(phase, sum(local_correct)/sum(local_total)))
 
 
             else:

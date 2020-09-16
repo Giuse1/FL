@@ -21,7 +21,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
 
-    valset = ValidationDataset(path='data_test/', transform=self.transform)
+    valset = ValidationDataset(path='data_test/', transform=transform)
     valloader = DataLoader(valset, batch_size=8, shuffle=True)
 
     #mnist_noniid_dataset = get_train_dataset(trainset, num_users)

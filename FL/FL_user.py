@@ -80,4 +80,4 @@ class LocalUpdate(object):
                 #batch_loss.append(loss.item())
             #epoch_loss.append(sum(batch_loss)/len(batch_loss))
 
-        return model.state_dict(), correct, len(dataset)
+        return model.state_dict(), correct, len(self.dataloader.dataset)

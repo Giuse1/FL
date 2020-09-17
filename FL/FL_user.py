@@ -25,13 +25,14 @@ from FL.torch_dataset import ClientDataset
 
 
 class LocalUpdate(object):
-    def __init__(self, dataloader, transform, id, criterion, optimizer, local_epochs):
+    def __init__(self, dataloader, transform, id, criterion, local_epochs):
         # self.trainloader = self.train_loader(dataset, idxs)
         self.id = id
         self.transform = transform
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.criterion = criterion
         self.local_epochs = local_epochs
+        self.dataloader = dataloader
 
     # def train_loader(self, dataset, idxs):
     #     """
@@ -55,7 +56,7 @@ class LocalUpdate(object):
         epoch_loss = []
 
         # Set optimizer for the local updates
-        #optimizer = torch.optim.SGD( model.parameters(), lr=0.1, momentum=0.9)
+        optimizer = torch.optim.SGD( model.parameters(), lr=0.1, momentum=0.9)
 
         #dataset = ClientDataset(path='data/'+str(self.id), transform=self.transform)
         #dataloader = DataLoader(dataset, batch_size=8, shuffle=True)
@@ -63,7 +64,7 @@ class LocalUpdate(object):
         for iter in range(self.local_epochs):
             batch_loss = []
             correct = 0
-            for (i, data) in enumerate(dataloader):
+            for (i, data) in enumerate(self.dataloader):
                 images, labels = data['input'].to(self.device), data['label'].to(self.device)
 
                 model.zero_grad()

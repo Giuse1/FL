@@ -24,10 +24,9 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
     # valset = ValidationDataset(path='data_test/', transform=transform)
     # valloader = DataLoader(valset, batch_size=8, shuffle=True)
-    trainloader_list =  getDataloaderList(path='data/', transform=transform, batch_size=8, shuffle=True)
+    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=8, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=8, shuffle=True)
     # mnist_noniid_dataset = get_train_dataset(trainset, num_users)
-    optimizer = torch.optim.SGD( model.parameters(), lr=0.1, momentum=0.9)
 
     for round in range(num_rounds):
         print('Epoch {}/{}'.format(round, num_rounds - 1))
@@ -41,7 +40,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
                 for idx in range(total_num_users):
                     local_model = LocalUpdate(dataloader=trainloader_list[idx], transform=transform, id=idx, criterion=criterion,
-                                              optimizer=optimizer, local_epochs=local_epochs)
+                                               local_epochs=local_epochs)
                     w, correct, total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
                     local_weights.append(copy.deepcopy(w))

@@ -29,8 +29,8 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
     # mnist_noniid_dataset = get_train_dataset(trainset, num_users)
 
     for round in range(num_rounds):
-        print('Epoch {}/{}'.format(round, num_rounds - 1))
         print('-' * 10)
+        print('Epoch {}/{}'.format(round, num_rounds - 1))
 
         for phase in ['train', 'val']:
             if phase == 'train':

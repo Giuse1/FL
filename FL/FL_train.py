@@ -35,18 +35,21 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
         for phase in ['train', 'val']:
             if phase == 'train':
                 local_weights = []
-                local_correct = []
-                local_total = []
+                gloabl_num_correct = 0
+                global_num_total = 0
+                global_loss = 0
 
                 for idx in range(total_num_users):
                     local_model = LocalUpdate(dataloader=trainloader_list[idx], transform=transform, id=idx, criterion=criterion,
                                                local_epochs=local_epochs)
-                    w, correct, total = local_model.update_weights(
+                    w, local_loss, local_correct, local_total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
-                    local_weights.append(copy.deepcopy(w))
+                    global_weights.append(copy.deepcopy(w))
+                    gloabl_num_correct += local_correct
+                    global_num_total += local_total
+                    global_loss += local_loss
                     # local_avg_losses.append(copy.deepcopy(loss))
-                    local_correct.append(copy.deepcopy(correct))
-                    local_total.append(copy.deepcopy(total))
+
                     # print(correct)
                     # print(total)
                     # print('{} Acc: {:.4f}'.format(phase, sum(local_correct)/sum(local_total)))
@@ -56,7 +59,10 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
                 # train_loss.append(mean(local_avg_losses))
                 # train_acc.append(mean(local_avg_acc))
-                print('{} Acc: {:.4f}'.format(phase, sum(local_correct) / sum(local_total)))
+                train_loss.append(global_loss / global_num_total)
+                train_acc.append(gloabl_num_correct / global_num_total)
+
+                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, global_loss/global_num_total, gloabl_num_correct/global_num_total ))
 
 
             else:
@@ -65,8 +71,10 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
                 val_loss.append(val_loss_r)
                 val_acc.append(val_accuracy_r)
+                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, val_loss_r, val_accuracy_r))
 
-    return val_acc  # train_acc, val_acc
+
+    return train_loss, train_acc, val_loss, val_acc
 
 
 def model_evaluation(model, dataloader_list, criterion):
@@ -91,11 +99,11 @@ def model_evaluation(model, dataloader_list, criterion):
             running_corrects += torch.sum(preds == labels)
             running_total += labels.shape[0]
 
+    epoch_loss = running_loss.double() / running_total
     epoch_acc = running_corrects.double() / running_total
 
-    print('{}  Acc: {:.4f}'.format("val", epoch_acc))
 
-    return _, epoch_acc
+    return epoch_loss, epoch_acc
 
 
 def average_weights(w):

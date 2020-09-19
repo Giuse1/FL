@@ -71,7 +71,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
 
                 val_loss.append(val_loss_r)
                 val_acc.append(val_accuracy_r)
-                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, val_loss_r, val_accuracy_r))
+                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, val_loss_r, val_accuracy_r))Z
 
 
     return train_loss, train_acc, val_loss, val_acc

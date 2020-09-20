@@ -77,7 +77,7 @@ class LocalUpdate(object):
 
                 loss.backward()
                 optimizer.step()
-                local_loss += loss.item()*input.size(0)
+                local_loss += loss.item()*images.size(0)
 
 
         return model.state_dict(), local_loss, local_correct, len(self.dataloader.dataset)

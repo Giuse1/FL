@@ -44,7 +44,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
                                                local_epochs=local_epochs)
                     w, local_loss, local_correct, local_total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
-                    global_weights.append(copy.deepcopy(w))
+                    local_weights.append(copy.deepcopy(w))
                     gloabl_num_correct += local_correct
                     global_num_total += local_total
                     global_loss += local_loss
@@ -99,7 +99,7 @@ def model_evaluation(model, dataloader_list, criterion):
             running_corrects += torch.sum(preds == labels)
             running_total += labels.shape[0]
 
-    epoch_loss = running_loss.double() / running_total
+    epoch_loss = running_loss / running_total
     epoch_acc = running_corrects.double() / running_total
 
 

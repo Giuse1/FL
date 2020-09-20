@@ -56,7 +56,7 @@ class LocalUpdate(object):
         epoch_loss = []
 
         # Set optimizer for the local updates
-        optimizer = torch.optim.SGD( model.parameters(), lr=0.1, momentum=0.9)
+        optimizer = torch.optim.SGD( model.parameters(), lr=0.01, momentum=0.9)
 
         #dataset = ClientDataset(path='data/'+str(self.id), transform=self.transform)
         #dataloader = DataLoader(dataset, batch_size=8, shuffle=True)

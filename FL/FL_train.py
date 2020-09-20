@@ -7,8 +7,11 @@ from FL.torch_dataset import getDataloaderList
 from torch.utils.data import DataLoader
 import os
 
+import random
+random.seed(0)
 
-def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
+
+def train_model(global_model, criterion, num_rounds=50, local_epochs=1, num_users=150):
     # copy weights
     global_weights = global_model.state_dict()
 
@@ -39,7 +42,8 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1):
                 global_num_total = 0
                 global_loss = 0
 
-                for idx in range(total_num_users):
+                random_list = random.sample(range(total_num_users), num_users)
+                for idx in random_list:
                     local_model = LocalUpdate(dataloader=trainloader_list[idx], transform=transform, id=idx, criterion=criterion,
                                                local_epochs=local_epochs)
                     w, local_loss, local_correct, local_total = local_model.update_weights(
@@ -85,7 +89,6 @@ def model_evaluation(model, dataloader_list, criterion):
     running_total = 0
 
     for dataloader in dataloader_list:
-
         for (i, data) in enumerate(dataloader):
             inputs, labels = data['input'].to(device), data['label'].to(device)
 

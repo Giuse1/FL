@@ -17,24 +17,27 @@ torch.manual_seed(0)
 
 
 batch_size = 8
-num_rounds = 50
+num_rounds = 2
 local_epochs = 1
+num_users = 150
 
 model_name = "resnet"
+
 num_classes = 10
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def initialize_model(num_classes=10, num_channels=1):
 
-    # model_ft = models.resnet18(pretrained=use_pretrained)
-    # num_ftrs = model_ft.fc.in_features
-    # model_ft.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3,bias=False)
-    #
-    # model_ft.fc = nn.Linear(num_ftrs, num_classes)
-    # input_size = 28
+    if model_name == "resnet":
+        model_ft = models.resnet18(pretrained=use_pretrained)
+        num_ftrs = model_ft.fc.in_features
+        model_ft.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3,bias=False)
 
-    model_ft = CNNMnist(num_channels=num_channels, num_classes=num_classes)
+        model_ft.fc = nn.Linear(num_ftrs, num_classes)
+    # input_size = 28
+    else:
+        model_ft = CNNMnist(num_channels=num_channels, num_classes=num_classes)
 
     return model_ft
 
@@ -50,15 +53,21 @@ model_ft = model_ft.to(device)
 #valloader = torch.utils.data.DataLoader(valset, batch_size=64, shuffle=True)
 #dataloaders_dict = {'train': trainloader, 'val': valloader }
 
-optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.1, momentum=0.9)
+optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.01, momentum=0.9)
 criterion = nn.CrossEntropyLoss()
 
-hist = train_model(model_ft, criterion, num_rounds=num_rounds, local_epochs=local_epochs)
+train_loss, train_acc, val_loss, val_acc = train_model(model_ft, criterion, num_rounds=num_rounds, local_epochs=local_epochs, num_users=num_users)
+val_acc = [x.cpu().numpy() for x in val_acc]
 
-hist_acc = [x.cpu().numpy() for x in hist]
-hist_acc
+plt.plot(train_loss, label="train_loss")
+plt.plot(train_acc, label="train_acc")
+plt.plot(val_loss, label="vall_loss")
+plt.plot(val_acc, label="val_acc")
+plt.legend()
+plt.legend()
+plt.show()
 
-
-plt.plot(hist_acc)
-arr = np.array(hist_acc)
-np.savetxt('acc_custom_f_50e.txt', arr)
+np.savetxt(f'train_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', train_loss)
+np.savetxt(f'train_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', train_acc)
+np.savetxt(f'val_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', val_loss)
+np.savetxt(f'val_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', np.array(val_acc))

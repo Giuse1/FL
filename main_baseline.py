@@ -114,7 +114,7 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5
 trainset = datasets.MNIST('', download=True, train=True, transform=transform)
 valset = datasets.MNIST('', download=True, train=False, transform=transform)
 
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=16, shuffle=True)
 valloader = torch.utils.data.DataLoader(valset, batch_size=64, shuffle=True)
 dataloaders_dict = {'train': trainloader, 'val': valloader }
 

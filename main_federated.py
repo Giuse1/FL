@@ -17,11 +17,20 @@ torch.manual_seed(0)
 
 
 batch_size = 8
-num_rounds = 2
+num_rounds = 50
 local_epochs = 1
 num_users = 150
 
+
 model_name = "resnet"
+
+
+print(f"NUM_USERS: {num_users}")
+print(f"batch_size: {batch_size}")
+print(f"num_rounds: {num_rounds}")
+print(f"local_epochs: {local_epochs}")
+print(f"model_name: {model_name}")
+
 
 num_classes = 10
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

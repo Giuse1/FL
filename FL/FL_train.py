@@ -21,14 +21,12 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1, num_user
 
     list_users = os.listdir('data')
     total_num_users = len(list_users)
-    num_users = 10
-
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
 
     # valset = ValidationDataset(path='data_test/', transform=transform)
     # valloader = DataLoader(valset, batch_size=8, shuffle=True)
-    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=8, shuffle=True)
-    valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=8, shuffle=True)
+    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=16, shuffle=True)
+    valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=16, shuffle=True)
     # mnist_noniid_dataset = get_train_dataset(trainset, num_users)
 
     for round in range(num_rounds):
@@ -117,5 +115,5 @@ def average_weights(w):
     for key in w_avg.keys():
         for i in range(1, len(w)):
             w_avg[key] += w[i][key]
-        w_avg[key] = torch.div(w_avg[key], len(w))
+        w_avg[key] = torch.true_divide(w_avg[key], len(w))
     return w_avg

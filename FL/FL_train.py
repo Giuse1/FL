@@ -11,7 +11,7 @@ import random
 random.seed(0)
 
 
-def train_model(global_model, criterion, num_rounds=50, local_epochs=1, num_users=150):
+def train_model(global_model, criterion, num_rounds, local_epochs, num_users, batch_size, learning_rate):
     # copy weights
     global_weights = global_model.state_dict()
 
@@ -25,8 +25,8 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1, num_user
 
     # valset = ValidationDataset(path='data_test/', transform=transform)
     # valloader = DataLoader(valset, batch_size=8, shuffle=True)
-    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=8, shuffle=True)
-    valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=8, shuffle=True)
+    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
     # mnist_noniid_dataset = get_train_dataset(trainset, num_users)
 
     for round in range(num_rounds):
@@ -43,7 +43,7 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1, num_user
                 random_list = random.sample(range(total_num_users), num_users)
                 for idx in random_list:
                     local_model = LocalUpdate(dataloader=trainloader_list[idx], transform=transform, id=idx, criterion=criterion,
-                                               local_epochs=local_epochs)
+                                               local_epochs=local_epochs, learning_rate=learning_rate)
                     w, local_loss, local_correct, local_total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
                     local_weights.append(copy.deepcopy(w))

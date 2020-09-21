@@ -25,7 +25,7 @@ from FL.torch_dataset import ClientDataset
 
 
 class LocalUpdate(object):
-    def __init__(self, dataloader, transform, id, criterion, local_epochs):
+    def __init__(self, dataloader, transform, id, criterion, local_epochs, learnin_rate):
         # self.trainloader = self.train_loader(dataset, idxs)
         self.id = id
         self.transform = transform
@@ -33,6 +33,7 @@ class LocalUpdate(object):
         self.criterion = criterion
         self.local_epochs = local_epochs
         self.dataloader = dataloader
+        self.learnin_rate = learnin_rate
 
     # def train_loader(self, dataset, idxs):
     #     """
@@ -56,7 +57,7 @@ class LocalUpdate(object):
         epoch_loss = []
 
         # Set optimizer for the local updates
-        optimizer = torch.optim.SGD( model.parameters(), lr=0.01, momentum=0.9)
+        optimizer = torch.optim.SGD( model.parameters(), lr=self.learning_rate, momentum=0.9)
 
         #dataset = ClientDataset(path='data/'+str(self.id), transform=self.transform)
         #dataloader = DataLoader(dataset, batch_size=8, shuffle=True)

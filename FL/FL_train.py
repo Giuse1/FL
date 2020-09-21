@@ -25,8 +25,8 @@ def train_model(global_model, criterion, num_rounds=50, local_epochs=1, num_user
 
     # valset = ValidationDataset(path='data_test/', transform=transform)
     # valloader = DataLoader(valset, batch_size=8, shuffle=True)
-    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=16, shuffle=True)
-    valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=16, shuffle=True)
+    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=8, shuffle=True)
+    valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=8, shuffle=True)
     # mnist_noniid_dataset = get_train_dataset(trainset, num_users)
 
     for round in range(num_rounds):

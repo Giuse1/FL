@@ -22,7 +22,7 @@ local_epochs = 1
 num_users = 150
 
 
-model_name = "resnet"
+model_name = "CNNMnist"
 
 
 print(f"NUM_USERS: {num_users}")
@@ -39,7 +39,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def initialize_model(num_classes=10, num_channels=1):
 
     if model_name == "resnet":
-        model_ft = models.resnet18(pretrained=use_pretrained)
+        model_ft = models.resnet18(pretrained=False)
         num_ftrs = model_ft.fc.in_features
         model_ft.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3,bias=False)
 

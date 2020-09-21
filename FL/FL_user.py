@@ -25,7 +25,7 @@ from FL.torch_dataset import ClientDataset
 
 
 class LocalUpdate(object):
-    def __init__(self, dataloader, transform, id, criterion, local_epochs, learnin_rate):
+    def __init__(self, dataloader, transform, id, criterion, local_epochs, learning_rate):
         # self.trainloader = self.train_loader(dataset, idxs)
         self.id = id
         self.transform = transform
@@ -33,7 +33,7 @@ class LocalUpdate(object):
         self.criterion = criterion
         self.local_epochs = local_epochs
         self.dataloader = dataloader
-        self.learnin_rate = learnin_rate
+        self.learning_rate = learning_rate
 
     # def train_loader(self, dataset, idxs):
     #     """

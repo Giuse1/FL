@@ -72,7 +72,7 @@ criterion = nn.CrossEntropyLoss()
 
 train_loss, train_acc, val_loss, val_acc = train_model(model_ft, criterion, num_rounds=num_rounds, local_epochs=local_epochs, num_users=num_users,
                                                        batch_size=batch_size, learning_rate=learning_rate)
-)
+
 val_acc = [x.cpu().numpy() for x in val_acc]
 
 plt.plot(train_loss, label="train_loss")
@@ -83,7 +83,7 @@ plt.legend()
 plt.legend()
 plt.show()
 
-np.savetxt(f'train_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', train_loss)
-np.savetxt(f'train_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', train_acc)
-np.savetxt(f'val_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u.txt', val_loss)
-np.savetxt(f'val_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}ls.txt', np.array(val_acc))
+np.savetxt(f'train_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', train_loss)
+np.savetxt(f'train_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', train_acc)
+np.savetxt(f'val_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', val_loss)
+np.savetxt(f'val_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', np.array(val_acc))

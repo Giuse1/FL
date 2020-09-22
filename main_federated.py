@@ -32,11 +32,6 @@ print(f"model_name: {model_name}")
 print(f"batch_size: {batch_size}")
 print(f"learning_rate: {learning_rate}")
 
-
-
-
-
-
 num_classes = 10
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -83,7 +78,7 @@ plt.legend()
 plt.legend()
 plt.show()
 
-np.savetxt(f'train_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', train_loss)
-np.savetxt(f'train_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', train_acc)
-np.savetxt(f'val_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', val_loss)
-np.savetxt(f'val_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', np.array(val_acc))
+np.savetxt(f'content/drive/My Drive/train_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', train_loss)
+np.savetxt(f'content/drive/My Drive/train_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', train_acc)
+np.savetxt(f'content/drive/My Drive/val_loss_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', val_loss)
+np.savetxt(f'content/drive/My Drive/val_acc_{model_name}_f_{num_rounds}r_{local_epochs}le_{num_users}u_{batch_size}b_{learning_rate}lr.txt', np.array(val_acc))

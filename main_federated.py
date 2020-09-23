@@ -6,9 +6,8 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import torchvision
-from torchvision import datasets, models, transforms
+from torchvision import models
 from model import CNNMnist
 from FL.FL_train import train_model
 print("PyTorch Version: ",torch.__version__)
@@ -44,7 +43,6 @@ def initialize_model(num_classes=10, num_channels=1):
         model_ft.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3,bias=False)
 
         model_ft.fc = nn.Linear(num_ftrs, num_classes)
-    # input_size = 28
     else:
         model_ft = CNNMnist(num_channels=num_channels, num_classes=num_classes)
 
@@ -54,15 +52,7 @@ model_ft = initialize_model(num_classes, num_channels=1)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model_ft = model_ft.to(device)
 
-#transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)),])
-#trainset = datasets.MNIST('', download=True, train=True, transform=transform)
-#valset = datasets.MNIST('', download=True, train=False, transform=transform)
 
-#trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
-#valloader = torch.utils.data.DataLoader(valset, batch_size=64, shuffle=True)
-#dataloaders_dict = {'train': trainloader, 'val': valloader }
-
-optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.01, momentum=0.9)
 criterion = nn.CrossEntropyLoss()
 
 train_loss, train_acc, val_loss, val_acc = train_model(model_ft, criterion, num_rounds=num_rounds, local_epochs=local_epochs, num_users=num_users,

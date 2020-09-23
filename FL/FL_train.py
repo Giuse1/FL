@@ -1,10 +1,8 @@
-from statistics import mean
 from FL.FL_user import LocalUpdate
 import copy
 import torch
 from FL.FL_getDataset import *
 from FL.torch_dataset import getDataloaderList
-from torch.utils.data import DataLoader
 import os
 
 import random
@@ -12,10 +10,7 @@ random.seed(0)
 
 
 def train_model(global_model, criterion, num_rounds, local_epochs, num_users, batch_size, learning_rate):
-    # copy weights
-    global_weights = global_model.state_dict()
 
-    # Training
     train_loss, train_acc = [], []
     val_loss, val_acc = [], []
 
@@ -23,11 +18,8 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
     total_num_users = len(list_users)
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
 
-    # valset = ValidationDataset(path='data_test/', transform=transform)
-    # valloader = DataLoader(valset, batch_size=8, shuffle=True)
     trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
-    # mnist_noniid_dataset = get_train_dataset(trainset, num_users)
 
     for round in range(num_rounds):
         print('-' * 10)
@@ -42,7 +34,7 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
 
                 random_list = random.sample(range(total_num_users), num_users)
                 for idx in random_list:
-                    local_model = LocalUpdate(dataloader=trainloader_list[idx], transform=transform, id=idx, criterion=criterion,
+                    local_model = LocalUpdate(dataloader=trainloader_list[idx], id=idx, criterion=criterion,
                                                local_epochs=local_epochs, learning_rate=learning_rate)
                     w, local_loss, local_correct, local_total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
@@ -50,17 +42,11 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
                     gloabl_num_correct += local_correct
                     global_num_total += local_total
                     global_loss += local_loss
-                    # local_avg_losses.append(copy.deepcopy(loss))
 
-                    # print(correct)
-                    # print(total)
-                    # print('{} Acc: {:.4f}'.format(phase, sum(local_correct)/sum(local_total)))
 
                 global_weights = average_weights(local_weights)
                 global_model.load_state_dict(global_weights)
 
-                # train_loss.append(mean(local_avg_losses))
-                # train_acc.append(mean(local_avg_acc))
                 train_loss.append(global_loss / global_num_total)
                 train_acc.append(gloabl_num_correct / global_num_total)
 
@@ -102,7 +88,6 @@ def model_evaluation(model, dataloader_list, criterion):
 
     epoch_loss = running_loss / running_total
     epoch_acc = running_corrects.double() / running_total
-
 
     return epoch_loss, epoch_acc
 

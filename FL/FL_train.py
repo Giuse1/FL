@@ -66,30 +66,31 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
 
 
 def model_evaluation(model, dataloader_list, criterion):
-    model.eval()  # Set model to evaluate mode
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    running_loss = 0.0
-    running_corrects = 0
-    running_total = 0
+    with torch.no_grad:
+        model.eval()  # Set model to evaluate mode
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        running_loss = 0.0
+        running_corrects = 0
+        running_total = 0
 
-    for dataloader in dataloader_list:
-        for (i, data) in enumerate(dataloader):
-            inputs, labels = data['input'].to(device), data['label'].to(device)
+        for dataloader in dataloader_list:
+            for (i, data) in enumerate(dataloader):
+                inputs, labels = data['input'].to(device), data['label'].to(device)
 
-            outputs = model(inputs.double())
-            loss = criterion(outputs, labels)
+                outputs = model(inputs.double())
+                loss = criterion(outputs, labels)
 
-            _, preds = torch.max(outputs, 1)
+                _, preds = torch.max(outputs, 1)
 
-            # statistics
-            running_loss += loss.item() * inputs.size(0)
-            running_corrects += torch.sum(preds == labels)
-            running_total += labels.shape[0]
+                # statistics
+                running_loss += loss.item() * inputs.size(0)
+                running_corrects += torch.sum(preds == labels)
+                running_total += labels.shape[0]
 
-    epoch_loss = running_loss / running_total
-    epoch_acc = running_corrects.double() / running_total
+        epoch_loss = running_loss / running_total
+        epoch_acc = running_corrects.double() / running_total
 
-    return epoch_loss, epoch_acc
+        return epoch_loss, epoch_acc
 
 
 def average_weights(w):

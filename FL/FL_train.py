@@ -66,7 +66,7 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
 
 
 def model_evaluation(model, dataloader_list, criterion):
-    with torch.no_grad:
+    with torch.no_grad():
         model.eval()  # Set model to evaluate mode
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         running_loss = 0.0

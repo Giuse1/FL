@@ -58,6 +58,8 @@ train_loss5, train_acc5, val_loss5, val_acc5 = read_file("results/hybrid_fl_150u
 train_loss6, train_acc6, val_loss6, val_acc6 = read_file("results/hybrid_fl_150u_g5.txt")
 train_loss7, train_acc7, val_loss7, val_acc7 = read_file("results/hybrid_random_fl_150u_g2.txt")
 train_loss8, train_acc8, val_loss8, val_acc8 = read_file("results/first150_CNNMnist_f_50r_2le_150u_8b_0.01lr.txt")
+train_loss9, train_acc9, val_loss9, val_acc9 = read_file("results/hybrid_fl_150u_2le_g2.txt")
+
 
 
 
@@ -78,13 +80,15 @@ plt.savefig("plots/Test loss with same amount of training samples.png")
 
 plt.figure()
 plt.plot(val_acc1, label='Standard FL - 150 users')
-plt.plot(val_acc2, label='Standard FL - 75 users')
+#plt.plot(val_acc2, color="tab:orange", label='Standard FL - 75 users')
 #plt.plot(val_acc3, label='Standard FL - 50 users')
-#plt.plot(val_acc4, color="tab:red", label='Standard FL - 30 users')
-plt.plot(val_acc5, '.-', label='Hybrid FL - 150 users with groups of 2')
-plt.plot(val_acc7, '-.', label='Hybrid random FL - 150 users with groups of 2 ')
-#plt.plot(val_acc6, '.-', color='tab:red', label='Hybrid FL - 150 users with groups of 5')
-plt.plot(val_acc8, '.-', label='150 users with 2 local epochs')
+plt.plot(val_acc4, color="tab:red", label='Standard FL - 30 users')
+#plt.plot(val_acc5, '.-', color="tab:orange", label='Hybrid FL - 150 users with groups of 2')
+#plt.plot(val_acc7, '-..',color="tab:blue", label='Hybrid random FL - 150 users with groups of 2 ')
+plt.plot(val_acc6, '.-', color='tab:red', label='Hybrid FL - 150 users with groups of 5')
+# plt.plot(val_acc8, color="tab:green", label='150 users with 2 local epochs')
+# plt.plot(val_acc9, '.-', color="tab:green", label='HFL - 150 users with groups of 2 with 2 epochs')
+
 
 
 plt.grid()

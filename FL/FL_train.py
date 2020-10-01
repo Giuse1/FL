@@ -18,7 +18,8 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
     total_num_users = len(list_users)
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
 
-    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    NIID_trainloader_list= getDataloaderNIIDList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    #trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 
     for round in range(num_rounds):

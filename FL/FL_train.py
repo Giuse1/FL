@@ -2,7 +2,7 @@ from FL.FL_user import LocalUpdate
 import copy
 import torch
 from FL.FL_getDataset import *
-from FL.torch_dataset import getDataloaderList
+from FL.torch_dataset import getDataloaderList, getClassesDataframes, getDataloaderNIIDList
 import os
 
 import random
@@ -112,10 +112,9 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
     val_loss, val_acc = [], []
 
     list_users = os.listdir('data')
-    total_num_users = len(list_users)
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
-
-    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    NIID_trainloader_list= getDataloaderNIIDList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    #trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 
 
@@ -134,7 +133,7 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
                 for i in range(int(num_groups)):
                     for j in range(users_per_group):
                         idx = j + i * users_per_group
-                        local_model = LocalUpdate(dataloader=trainloader_list[idx ], id=idx, criterion=criterion,
+                        local_model = LocalUpdate(dataloader=NIID_trainloader_list[idx], id=idx, criterion=criterion,
                                                local_epochs=local_epochs, learning_rate=learning_rate)
 
                         if j == 0:

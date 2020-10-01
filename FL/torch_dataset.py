@@ -73,7 +73,7 @@ class ValidationDataset(Dataset):
         return sample
 
 
-def getDataloaderList(path, total_num_users, transform, batch_size, shuffle):
+def getDataloaderList(path, transform, batch_size, shuffle):
     list_users = os.listdir(path)
     total_num_users = len(list_users)
     dl_list = []

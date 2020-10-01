@@ -18,9 +18,11 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
     total_num_users = len(list_users)
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
 
-    NIID_trainloader_list= getDataloaderNIIDList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    NIID_trainloader_list= getDataloaderNIIDList(path='data/', total_num_users=num_users,transform=transform, batch_size=batch_size, shuffle=True)
     #trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
+
+    random_list = range(num_users)
 
     for round in range(num_rounds):
         print('-' * 10)
@@ -33,9 +35,8 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
                 global_num_total = 0
                 global_loss = 0
 
-                random_list = random.sample(range(total_num_users), num_users)
                 for idx in random_list:
-                    local_model = LocalUpdate(dataloader=trainloader_list[idx], id=idx, criterion=criterion,
+                    local_model = LocalUpdate(dataloader=NIID_trainloader_list[idx], id=idx, criterion=criterion,
                                                local_epochs=local_epochs, learning_rate=learning_rate)
                     w, local_loss, local_correct, local_total = local_model.update_weights(
                         model=copy.deepcopy(global_model).double())
@@ -114,7 +115,7 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
 
     list_users = os.listdir('data')
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
-    NIID_trainloader_list= getDataloaderNIIDList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    NIID_trainloader_list= getDataloaderNIIDList(path='data/', total_num_users=num_users, transform=transform, batch_size=batch_size, shuffle=True)
     # trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 

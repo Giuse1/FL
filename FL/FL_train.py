@@ -114,7 +114,7 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
     list_users = os.listdir('data')
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
     NIID_trainloader_list= getDataloaderNIIDList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
-    #trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    # trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 
 

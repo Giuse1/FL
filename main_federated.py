@@ -17,7 +17,7 @@ torch.manual_seed(0)
 
 num_rounds = 50
 local_epochs = 1
-num_users = 10
+num_users = 3
 batch_size = 8
 learning_rate = 0.01
 model_name = "CNNMnist"

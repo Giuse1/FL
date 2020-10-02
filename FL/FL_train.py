@@ -104,10 +104,7 @@ def average_weights(w, samples_per_client):
     w_avg = copy.deepcopy(w[0])
     for key in w_avg.keys():
         for i in range(1, len(w)):
-            print(w[i][key])
-            print(1/samples_per_client[i])
             w_avg[key] += torch.true_divide(w[i][key], 1/samples_per_client[i])
-            print(w_avg[key])
 
         w_avg[key] = torch.true_divide(w_avg[key], sum(samples_per_client[i]))
     return w_avg

@@ -120,8 +120,8 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
 
     list_users = os.listdir('data')
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
-    NIID_trainloader_list= getDataloaderNIIDList(path='data/', total_num_users=num_users, transform=transform, batch_size=batch_size, shuffle=True)
-    # trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
+    #NIID_trainloader_list= getDataloaderNIIDList(path='data/', total_num_users=num_users, transform=transform, batch_size=batch_size, shuffle=True)
+    trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 
 
@@ -133,36 +133,41 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
         for phase in ['train', 'val']:
             if phase == 'train':
                 local_weights = []
-                gloabl_num_correct = 0
-                global_num_total = 0
-                global_loss = 0
+                samples_per_client = []
+
+                # gloabl_num_correct = 0
+                # global_num_total = 0
+                # global_loss = 0
 
                 for i in range(int(num_groups)):
                     for j in range(users_per_group):
                         idx = j + i * users_per_group
-                        local_model = LocalUpdate(dataloader=NIID_trainloader_list[idx], id=idx, criterion=criterion,
+                        local_model = LocalUpdate(dataloader=trainloader_list[idx], id=idx, criterion=criterion,
                                                local_epochs=local_epochs, learning_rate=learning_rate)
 
                         if j == 0:
                             w, local_loss, local_correct, local_total = local_model.update_weights(
                                 model=copy.deepcopy(global_model).double())
+                            samples_per_client.append(local_total)
                         else:
                             model_tmp = copy.deepcopy(global_model)
                             model_tmp.load_state_dict(w)
                             w, local_loss, local_correct, local_total = local_model.update_weights(
                                 model=model_tmp.double())
+                            samples_per_client[i] += local_total
 
-                        gloabl_num_correct += local_correct
-                        global_num_total += local_total
-                        global_loss += local_loss
+                        # gloabl_num_correct += local_correct
+                        # global_num_total += local_total
+                        # global_loss += local_loss
+
 
                     local_weights.append(copy.deepcopy(w))
 
-                global_weights = average_weights(local_weights)
+                global_weights = average_weights(local_weights, samples_per_client)
                 global_model.load_state_dict(global_weights)
 
-                train_loss.append(global_loss / global_num_total)
-                train_acc.append(gloabl_num_correct / global_num_total)
+                #train_loss.append(global_loss / global_num_total)
+                #train_acc.append(gloabl_num_correct / global_num_total)
 
                 print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, global_loss/global_num_total, gloabl_num_correct/global_num_total ))
 

@@ -31,12 +31,9 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
         for phase in ['train', 'val']:
             if phase == 'train':
                 local_weights = []
-                gloabl_num_correct = 0
-                global_num_total = 0
-                global_loss = 0
                 samples_per_client = []
 
-                random_list = random.sample(range(total_num_users),num_users)
+                random_list = random.sample(range(total_num_users), num_users)
 
                 for idx in random_list:
                     local_model = LocalUpdate(dataloader=trainloader_list[idx], id=idx, criterion=criterion,

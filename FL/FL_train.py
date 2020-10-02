@@ -22,7 +22,7 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
     trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 
-    #random_list = range(num_users)
+    random_list = range(num_users)
 
     for round in range(num_rounds):
         print('-' * 10)
@@ -33,7 +33,7 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
                 local_weights = []
                 samples_per_client = []
 
-                random_list = random.sample(range(total_num_users), num_users)
+                #random_list = random.sample(range(total_num_users), num_users)
 
                 for idx in random_list:
                     local_model = LocalUpdate(dataloader=trainloader_list[idx], id=idx, criterion=criterion,

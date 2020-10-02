@@ -106,7 +106,7 @@ def average_weights(w, samples_per_client):
         for i in range(1, len(w)):
             w_avg[key] += torch.true_divide(w[i][key], 1/samples_per_client[i])
 
-        w_avg[key] = torch.true_divide(w_avg[key], sum(samples_per_client[i]))
+        w_avg[key] = torch.true_divide(w_avg[key], sum(samples_per_client))
     return w_avg
 
 

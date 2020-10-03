@@ -20,23 +20,27 @@ def read_file(path):
     return train_loss, train_acc, val_loss, val_acc
 train_loss0, train_acc0, val_loss0, val_acc0 = read_file("results_weighted/standard_first150_1le_.txt")
 train_loss1, train_acc1, val_loss1, val_acc1 = read_file("results_weighted/standard_first150group2_1le.txt")
-train_loss2, train_acc2, val_loss2, val_acc2 = read_file("results_weighted/standard_first150group3_1le.txt")
+train_loss2, train_acc2, val_loss2, val_acc2 = read_file("results_weighted/aggregated_first150group2_1le.txt")
 train_loss3, train_acc3, val_loss3, val_acc3 = read_file("results_weighted/standard_first150group5_1le.txt")
+train_loss4, train_acc4, val_loss4, val_acc4 = read_file("results_weighted/aggregated_first150group5_1le.txt")
+
 
 
 plt.figure()
-plt.plot(val_acc0, label='150 users')
-plt.plot(val_acc1, label='75 users')
-plt.plot(val_acc2, label='50 users')
-plt.plot(val_acc3, label='30 users')
+plt.plot(val_acc0, label='Standard FL - 150 users')
+#plt.plot(val_acc1, color="tab:orange", label='Standard FL - 75 users')
+plt.plot(val_acc2, color="tab:orange", label='Aggregated FL - 150 users in groups of 2 ')
+#plt.plot(val_acc3, color="tab:red", label='Standard FL - 30 users')
+plt.plot(val_acc4, color="tab:red", label='Aggregated FL - 150 users in groups of 5 ')
+
 plt.legend()
-plt.title("Test accuracy with same amount of data - Standard FL")
+plt.title("Test accuracy with first 150 users - SFL vs HFL")
 plt.xlabel("Round")
 plt.ylabel("Accuracy")
 plt.grid()
 plt.xticks(range(0,50,5))
 plt.yticks(np.arange(0,1,0.1))
-plt.savefig("plots/Test accuracy with same amount of samples Standard FL with first 150 clients.png")
+plt.savefig("plots/Test accuracy SFL vs HFL.png")
 #
 # train_loss1, train_acc1, val_loss1, val_acc1 = read_file("results/first150_CNNMnist_f_50r_1le_150u_8b_0.01lr.txt")
 # train_loss2, train_acc2, val_loss2, val_acc2 = read_file("results/first150group2_CNNMnist_f_50r_1le_150u_8b_0.01lr.txt")

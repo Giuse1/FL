@@ -169,7 +169,7 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
                 #train_loss.append(global_loss / global_num_total)
                 #train_acc.append(gloabl_num_correct / global_num_total)
 
-                print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, global_loss/global_num_total, gloabl_num_correct/global_num_total ))
+                #print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, global_loss/global_num_total, gloabl_num_correct/global_num_total ))
 
 
             else:

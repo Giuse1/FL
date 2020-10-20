@@ -18,7 +18,9 @@ def train_model(global_model, criterion, num_rounds, local_epochs, num_users, ba
     total_num_users = len(list_users)
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
 
-    NIID_trainloader_list = getDataloaderNIIDList(path='data/', total_num_users=num_users,transform=transform, batch_size=batch_size, shuffle=True)
+    #NIID_trainloader_list = getDataloaderNIIDList(path='data/', total_num_users=num_users,transform=transform, batch_size=batch_size, shuffle=True)
+    NIID_trainloader_list = getDataloaderList(path='data_nonIID/', total_num_users=num_users,transform=transform, batch_size=batch_size, shuffle=True)
+
     #trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 
@@ -118,11 +120,13 @@ def train_model_aggregated(global_model, criterion, num_rounds, local_epochs, nu
     train_loss, train_acc = [], []
     val_loss, val_acc = [], []
 
-    list_users = os.listdir('data')
+    list_users = os.listdir('data_test')
     total_num_users = len(list_users)
 
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), ])
-    NIID_trainloader_list= getDataloaderNIIDList(path='data/', total_num_users=total_num_users, transform=transform, batch_size=batch_size, shuffle=True)
+    #NIID_trainloader_list= getDataloaderNIIDList(path='data/', total_num_users=total_num_users, transform=transform, batch_size=batch_size, shuffle=True)
+    NIID_trainloader_list = getDataloaderList(path='data_nonIID/', transform=transform, batch_size=batch_size, shuffle=True)
+
     # trainloader_list = getDataloaderList(path='data/', transform=transform, batch_size=batch_size, shuffle=True)
     valloader_list = getDataloaderList(path='data_test/', transform=transform, batch_size=batch_size, shuffle=True)
 

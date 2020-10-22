@@ -20,3 +20,11 @@ class CNNMnist(nn.Module):
         x = F.dropout(x, training=self.training)
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
+
+
+def shufflenet(num_classes):
+    model = models.shufflenet_v2_x1_0()
+    output_channels = model.fc.in_features
+    model.fc = nn.Linear(output_channels, num_classes)
+
+    return model

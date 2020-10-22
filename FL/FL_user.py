@@ -18,7 +18,7 @@ class LocalUpdate(object):
             local_correct = 0
             local_loss = 0.0
             for (i, data) in enumerate(self.dataloader):
-                images, labels = data['input'].to(self.device), data['label'].to(self.device)
+                images, labels = data[0].to(self.device), data[1].to(self.device)
 
                 optimizer.zero_grad()
                 log_probs = model(images.double())
@@ -29,6 +29,5 @@ class LocalUpdate(object):
                 loss.backward()
                 optimizer.step()
                 local_loss += loss.item()*images.size(0)
-
 
         return model.state_dict(), local_loss, local_correct, len(self.dataloader.dataset)

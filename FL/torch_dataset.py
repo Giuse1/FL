@@ -1,144 +1,72 @@
-from torch.utils.data import Dataset
 import torch
-import numpy as np
-import ast
-import pandas as pd
-from torchvision import transforms
-from torch.utils.data import DataLoader
-
-import os
+import torchvision
+import torchvision.transforms as transforms
+from operator import itemgetter
+import random
+random.seed(0)
 
 
-class ClientDataset(Dataset):
+def get_cifar_iid(batch_size):
+    transform = transforms.Compose(
+        [transforms.ToTensor(),
+         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    def __init__(self, path, transform=None, df=None):
+    trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
+                                            download=True, transform=transform)
 
-        self.path = path
-        self.transform = transform
-        if df is not None:
-            self.df = df
-        else:
-            self.df = pd.read_csv(path)
+    testset = torchvision.datasets.CIFAR10(root='./data', train=False,
+                                           download=True, transform=transform)
 
+    classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    def __len__(self):
-        return self.df.shape[0]
+    train_dataset = []
+    test_dataset = []
+    sets = [trainset, testset]
+    for idx, s in enumerate(sets):
+        for d in s:
+            d = list(d)
+            d[1] = classes[d[1]]
+            if idx == 0:
+                train_dataset.append(tuple(d))
+            else:
+                test_dataset.append(tuple(d))
 
+    final_classes = ('plane', 'car', 'ship', 'truck', 'bird', 'cat',
+                     'deer', 'dog', 'frog', 'horse')
 
-    def __getitem__(self, idx):
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
+    trainset = []
+    testset = []
+    sets = [train_dataset, test_dataset]
+    for idx, s in enumerate(sets):
+        for d in s:
+            d = list(d)
+            d[1] = final_classes.index(d[1])
+            if idx == 0:
+                trainset.append(tuple(d))
+            else:
+                testset.append(tuple(d))
 
-        label = torch.tensor(self.df.loc[idx, 'labels'])
-        input = np.array(ast.literal_eval(self.df.loc[idx,'pixels'])).reshape(28, 28)
-        if self.transform:
-            input = self.transform(input)
-        sample = {'input': input, 'label': label}
+    data_per_client = 100
+    total_data = len(trainset)
+    random_list = random.sample(range(total_data), total_data)
+    num_clients = int(total_data / data_per_client)
+    datasets = []
+    for i in range(num_clients):
+        indexes = random_list[i:i + 100]
+        datasets.append(itemgetter(*indexes)(trainset))
 
-        return sample
+    trainloader_list = []
+    for d in datasets:
+        trainloader_list.append(torch.utils.data.DataLoader(d, batch_size=batch_size, shuffle=True, num_workers=2))
 
+    testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
 
-class ValidationDataset(Dataset):
-
-    def __init__(self, path, transform=None):
-
-        self.path = path
-        self.transform = transform
-        df_list = []
-        list_users = os.listdir(path)
-        total_num_users = len(list_users)
-        dim = []
-        for idx in range(total_num_users):
-            df = pd.read_csv(path + str(idx))
-            df_list.append(df)
-            dim.append(df.shape[0])
-
-        self.df = pd.concat(df_list)
-
-
-    def __len__(self):
-        return self.df.shape[0]
-
-
-    def __getitem__(self, idx):
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
-
-        label = torch.tensor(self.df.loc[idx, 'labels'])
-        input = np.array(ast.literal_eval(self.df.loc[idx,'pixels'])).reshape(28, 28)
-        if self.transform:
-            input = self.transform(input)
-        sample = {'input': input, 'label': label}
-
-        return sample
+    return trainloader_list, testloader
 
 
-def getDataloaderList(path, transform, batch_size, shuffle):
-    list_users = os.listdir(path)
-    total_num_users = len(list_users)
-    dl_list = []
-    for idx in range(total_num_users):
-        dataset = ClientDataset(path+str(idx), transform)
-        dl_list.append(DataLoader(dataset, batch_size=batch_size, shuffle=shuffle))
+# def get_cifar_noniid(batch_size):
+#     indexes_animals
+#     indexes_means
+#
+#
 
-    return dl_list
-
-def getClassesDataframes(path, total_num_users):
-
-
-    df_list = [pd.DataFrame() for _ in range(10)]
-
-    for idx in range(total_num_users):
-        df = pd.read_csv(path + str(idx))[['labels','pixels']]
-        for label in range(10):
-            df_list[label] = df_list[label].append(df[df['labels']==label])
-
-    for idx in range(10):
-        df_list[idx] = df_list[idx].sample(frac=1).reset_index(drop=True)
-    return df_list
-
-
-
-def getClientDF(classes, last, df_list, lenghts_data):
-
-    df = pd.DataFrame()
-
-    for c in classes:
-        if last:
-            to_append = df_list[c]
-        else:
-            to_append = df_list[c].sample(n=int(lenghts_data[c]/75))
-
-
-        df = df.append(to_append)
-        df_list[c] = df_list[c].drop(to_append.index)
-
-
-    return df.sample(frac=1).reset_index(drop=True)
-
-
-def getDataloaderNIIDList(path, total_num_users, transform, batch_size, shuffle):
-
-    dl_list = []
-    df_list = getClassesDataframes(path, total_num_users)
-    lenghts_data = [len(c) for c in df_list]
-
-    for idx in range(total_num_users):
-
-        if idx%2 == 0:
-            classes = range(0,5)
-        else:
-            classes = range(5, 10)
-
-        if idx==total_num_users-1 or idx==total_num_users-2:
-            last=True
-        else:
-            last= False
-
-        df = getClientDF(classes, last, df_list, lenghts_data)
-
-        dataset = ClientDataset(path + str(idx), transform, df)
-        dl_list.append(DataLoader(dataset, batch_size=batch_size, shuffle=shuffle))
-
-
-    return dl_list

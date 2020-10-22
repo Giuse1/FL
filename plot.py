@@ -23,26 +23,29 @@ def read_file(path):
 
 
 
-train_loss0, train_acc0, val_loss0, val_acc0 = read_file("results_weighted/standard_nonIID_150u_1le")
-train_loss1, train_acc1, val_loss1, val_acc1 = read_file("results_weighted/standard_nonIID_75u_1le")
-train_loss7, train_acc7, val_loss7, val_acc7 = read_file("results_weighted/hybrid_nonIID_random_150u_1le")
+train_loss0, train_acc0, val_loss0, val_acc0 = read_file("results_weighted/hybrid_nonIID_random_150u_1le")
+train_loss1, train_acc1, val_loss1, val_acc1 = read_file("results_weighted/hybrid_nonIID_random_150u_1le_complementary")
+train_loss7, train_acc7, val_loss7, val_acc7 = read_file("results_weighted/hybrid_nonIID_random_150u_1le_seed1")
+_, _, _, val_acc2 = read_file("results_weighted/hybrid_nonIID_random_150u_1le_same")
 
 
 plt.figure()
-plt.plot(np.arange(300,300*51,300),val_acc0, label='SFL - 1 local epoch, 150 users')
-plt.plot(np.arange(150,150*101,150),val_acc1, label='SFL - 1 local epoch, 75 users')
-plt.plot(np.arange(225,225*51,225),val_acc7,  color="tab:red", label='HFL - 1 local epoch, 150 users in groups of 2')
+plt.plot(val_acc0, label='seed 0')
+plt.plot(val_acc7, label='seed 1')
+plt.plot(val_acc1, label='Complementary users')
+plt.plot(val_acc2, label='Same kind of users')
+
 
 plt.legend()
 plt.grid()
 #plt.xticks(range(0, 101, 5))
 
 plt.yticks(np.arange(0, 1, 0.1))
-plt.xlabel("Number of transmissions")
+plt.xlabel("Rounds")
 plt.ylabel("Accuracy")
-plt.title("Accuracy w.r.t. to number of transmissions with non-IID data")
-plt.savefig("non_iid comparison wrt number of transmissions")
-#plt.show()
+plt.title("Accuracy w.r.t. to number of rounds with non-IID data")
+#plt.savefig("non_iid comparison different scenarios")
+plt.show()
 
 #
 # train_loss0, train_acc0, val_loss0, val_acc0 = read_file("results_weighted/standard_nonIID_150u_1le")

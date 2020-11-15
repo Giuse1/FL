@@ -30,10 +30,10 @@ _, _, _, val_acc2 = read_file("results_weighted/hybrid_nonIID_random_150u_1le_sa
 
 
 plt.figure()
-plt.plot(val_acc0, label='seed 0')
-plt.plot(val_acc7, label='seed 1')
-plt.plot(val_acc1, label='Complementary users')
-plt.plot(val_acc2, label='Same kind of users')
+plt.plot(val_acc0, label='HFL - Random selection (seed 0)')
+plt.plot(val_acc7, label='HFL - Random selection (seed 1)')
+plt.plot(val_acc1, label='HFL - Complementary users')
+plt.plot(val_acc2, label='HFL - Same kind of users')
 
 
 plt.legend()
@@ -44,8 +44,8 @@ plt.yticks(np.arange(0, 1, 0.1))
 plt.xlabel("Rounds")
 plt.ylabel("Accuracy")
 plt.title("Accuracy w.r.t. to number of rounds with non-IID data")
-#plt.savefig("non_iid comparison different scenarios")
-plt.show()
+plt.savefig("non_iid comparison different scenarios")
+#plt.show()
 
 #
 # train_loss0, train_acc0, val_loss0, val_acc0 = read_file("results_weighted/standard_nonIID_150u_1le")

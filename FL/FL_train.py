@@ -1,7 +1,7 @@
 from FL.FL_user import LocalUpdate
 import copy
 import torch
-from FL.FL_getDataset import *
+import torchvision.transforms as transforms
 from FL.torch_dataset import getDataloaderList, getClassesDataframes, getDataloaderNIIDList
 import os
 
